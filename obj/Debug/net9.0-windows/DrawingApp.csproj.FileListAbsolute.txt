@@ -1,0 +1,28 @@
+C:\Users\DIPNA\Documents\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.exe
+C:\Users\DIPNA\Documents\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.deps.json
+C:\Users\DIPNA\Documents\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.runtimeconfig.json
+C:\Users\DIPNA\Documents\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.dll
+C:\Users\DIPNA\Documents\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.pdb
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.AssemblyInfoInputs.cache
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.AssemblyInfo.cs
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.csproj.CoreCompileInputs.cache
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.dll
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\refint\DrawingApp.dll
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.pdb
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.genruntimeconfig.cache
+C:\Users\DIPNA\Documents\DrawingApp\obj\Debug\net9.0-windows\ref\DrawingApp.dll
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.exe
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.deps.json
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.runtimeconfig.json
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.dll
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\bin\Debug\net9.0-windows\DrawingApp.pdb
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.AssemblyInfoInputs.cache
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.AssemblyInfo.cs
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.csproj.CoreCompileInputs.cache
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.dll
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\refint\DrawingApp.dll
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.pdb
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\DrawingApp.genruntimeconfig.cache
+C:\Users\STYLEE COMPUTERS\Desktop\DrawingApp\obj\Debug\net9.0-windows\ref\DrawingApp.dll
