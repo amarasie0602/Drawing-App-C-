@@ -35,6 +35,8 @@ public abstract class Shape
     public int BorderWidth { get; set; } = 2;
 
     [JsonIgnore]
+  
+  // Expose Color properties for easier use in code, but ignore them in JSON since we are storing as ARGB ints
     public Color FillColor
     {
         get { return Color.FromArgb(FillArgb); }
