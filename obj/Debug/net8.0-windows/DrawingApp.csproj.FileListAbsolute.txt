@@ -1,0 +1,15 @@
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\bin\Debug\net8.0-windows\ShapeApp.exe
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\bin\Debug\net8.0-windows\ShapeApp.deps.json
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\bin\Debug\net8.0-windows\ShapeApp.runtimeconfig.json
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\bin\Debug\net8.0-windows\ShapeApp.dll
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\bin\Debug\net8.0-windows\ShapeApp.pdb
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.GeneratedMSBuildEditorConfig.editorconfig
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.AssemblyInfoInputs.cache
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.AssemblyInfo.cs
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.csproj.CoreCompileInputs.cache
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.sourcelink.json
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\ShapeApp.dll
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\refint\ShapeApp.dll
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\ShapeApp.pdb
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\DrawingApp.genruntimeconfig.cache
+E:\Drawing app assignment\EG_2023_5786\DrawingApp\obj\Debug\net8.0-windows\ref\ShapeApp.dll
