@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DrawingApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bcc960d29ecfb2c7a238d4aeb7e309e0886523e1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ce18e96a0db86363f2c59aa417d927f5697df14")]
 [assembly: System.Reflection.AssemblyProductAttribute("DrawingApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DrawingApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
