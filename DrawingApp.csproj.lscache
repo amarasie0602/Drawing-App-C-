@@ -53,6 +53,7 @@ obj/Debug/net8.0-windows/
  .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
  DrawingApp.AssemblyInfo.cs
  DrawingApp.GlobalUsings.g.cs
+PolygonShape.cs
 Program.cs
 RectangleShape.cs
 Shape.cs
