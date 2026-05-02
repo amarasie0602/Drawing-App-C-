@@ -18,12 +18,15 @@ public class ShapeHandle
     }
 }
 
+// Base class for all shapes. Uses JSON polymorphism to allow saving/loading a list of different shape types.
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
 [JsonDerivedType(typeof(RectangleShape), "rect")]
 [JsonDerivedType(typeof(CircleShape), "circle")]
 [JsonDerivedType(typeof(TriangleShape), "triangle")]
 [JsonDerivedType(typeof(LineShape), "line")]
 [JsonDerivedType(typeof(PolygonShape), "polygon")]
+
+// Note: System.Text.Json does not support polymorphic deserialization of abstract classes, so we have to use a workaround by adding a dummy property in each derived class. See
 public abstract class Shape
 {
     // Storing as int because System.Text.Json cant serialize Color directly
