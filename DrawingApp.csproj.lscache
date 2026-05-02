@@ -55,6 +55,7 @@ obj/Debug/net8.0-windows/
 Program.cs
 RectangleShape.cs
 Shape.cs
+TriangleShape.cs
 
 [metadataReferences]
 <DOTNET>/packs/Microsoft.NETCore.App.Ref/8.0.24/ref/net8.0/
