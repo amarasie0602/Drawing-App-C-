@@ -35,7 +35,7 @@ public class Form1 : Form
     private ToolStripLabel labelCoords;
     private ToolStripLabel labelInfo;
 
-    public Form1()
+    public Form1() {
     {
         this.Text = "Drawing App";
         this.Size = new Size(1000, 650);
@@ -52,7 +52,7 @@ public class Form1 : Form
 
         SetActiveTool(CanvasTool.Rectangle);
         UpdateTitle();
-    }
+    } }
 
     private void SetupCanvas()
     {
@@ -155,7 +155,7 @@ public class Form1 : Form
     {
         statusBar = new StatusStrip();
         labelCoords = new ToolStripLabel("x: 0  y: 0");
-        labelInfo   = new ToolStripLabel("") { Spring = true };
+        labelInfo   = new ToolStripStatusLabel("") { Spring = true };
         labelInfo.TextAlign = ContentAlignment.MiddleRight;
         statusBar.Items.Add(labelCoords);
         statusBar.Items.Add(new ToolStripSeparator());
