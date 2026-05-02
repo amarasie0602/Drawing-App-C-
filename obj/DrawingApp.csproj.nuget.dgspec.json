@@ -8,7 +8,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "E:\\Drawing app assignment\\EG_2023_5786\\DrawingApp\\DrawingApp.csproj",
-        "projectName": "DrawingApp",
+        "projectName": "ShapeApp",
         "projectPath": "E:\\Drawing app assignment\\EG_2023_5786\\DrawingApp\\DrawingApp.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
         "outputPath": "E:\\Drawing app assignment\\EG_2023_5786\\DrawingApp\\obj\\",
@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0-windows"
+          "net8.0-windows"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0-windows7.0": {
-            "targetAlias": "net9.0-windows",
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
             "projectReferences": {}
           }
         },
@@ -48,8 +48,8 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0-windows7.0": {
-          "targetAlias": "net9.0-windows",
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
           "imports": [
             "net461",
             "net462",
