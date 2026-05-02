@@ -1,214 +1,447 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 
-public partial class Form1 : Form
+public class Form1 : Form
 {
-    private List<Shape> shapes = new List<Shape>();
-    private Stack<Shape> undoStack = new Stack<Shape>();
-    private Stack<Shape> redoStack = new Stack<Shape>();
-    private Shape currentShape = null;
-    private Shape selectedShape = null;
-    private Point startPoint;
+    private DrawingCanvas canvas;
 
-    private ComboBox shapeSelector;
-    private Button fillColorButton;
-    private Button borderColorButton;
-    private NumericUpDown borderWidthControl;
-    private Button undoButton;
-    private Button redoButton;
-    private Panel canvas;
+    // Toolbar buttons
+    private ToolStrip toolbar;
+    private ToolStripButton btnSelect;
+    private ToolStripButton btnRectangle;
+    private ToolStripButton btnCircle;
+    private ToolStripButton btnTriangle;
+    private ToolStripButton btnLine;
+    private ToolStripButton btnPolygon;
+    private ToolStripButton btnUndo;
+    private ToolStripButton btnRedo;
+    private ToolStripButton btnDelete;
+    private ToolStripButton btnNew;
+    private ToolStripButton btnOpen;
+    private ToolStripButton btnSave;
 
-    private Color selectedFillColor = Color.LightBlue;
-    private Color selectedBorderColor = Color.Black;
-    private int selectedBorderWidth = 2;
+    // Property controls
+    private Panel propertyPanel;
+    private Label fillSwatch;
+    private Label borderSwatch;
+    private Button btnFillColor;
+    private Button btnBorderColor;
+    private NumericUpDown borderWidthInput;
+
+    // Status bar
+    private StatusStrip statusBar;
+    private ToolStripLabel labelCoords;
+    private ToolStripLabel labelInfo;
 
     public Form1()
     {
-        InitializeComponent();
+        this.Text = "Drawing App";
+        this.Size = new Size(1000, 650);
+        this.MinimumSize = new Size(700, 500);
+        this.KeyPreview = true;
+        this.KeyDown += Form1_KeyDown;
+
+        SetupCanvas();
+        SetupToolbar();
+        SetupPropertyPanel();
+        SetupStatusBar();
+        SetupLayout();
+        WireUpEvents();
+
+        SetActiveTool(CanvasTool.Rectangle);
+        UpdateTitle();
     }
 
-    private void InitializeComponent()
+    private void SetupCanvas()
     {
-        this.Text = "Shape Drawing App (with Bonus)";
-        this.Size = new Size(900, 600);
+        canvas = new DrawingCanvas();
+        canvas.Dock = DockStyle.Fill;
+        canvas.TabStop = true;
+    }
 
-        shapeSelector = new ComboBox();
-        shapeSelector.Items.AddRange(new string[] { "Rectangle", "Circle" });
-        shapeSelector.SelectedIndex = 0;
-        shapeSelector.Location = new Point(10, 10);
+    private void SetupToolbar()
+    {
+        toolbar = new ToolStrip();
 
-        fillColorButton = new Button();
-        fillColorButton.Text = "Fill Color";
-        fillColorButton.Location = new Point(150, 10);
-        fillColorButton.Click += (s, e) =>
+        btnNew       = new ToolStripButton("New");
+        btnOpen      = new ToolStripButton("Open");
+        btnSave      = new ToolStripButton("Save");
+        btnSelect    = new ToolStripButton("Select");
+        btnRectangle = new ToolStripButton("Rectangle");
+        btnCircle    = new ToolStripButton("Circle");
+        btnTriangle  = new ToolStripButton("Triangle");
+        btnLine      = new ToolStripButton("Line");
+        btnPolygon   = new ToolStripButton("Polygon");
+        btnUndo      = new ToolStripButton("Undo");
+        btnRedo      = new ToolStripButton("Redo");
+        btnDelete    = new ToolStripButton("Delete");
+
+        btnNew.ToolTipText       = "New drawing (Ctrl+N)";
+        btnOpen.ToolTipText      = "Open file (Ctrl+O)";
+        btnSave.ToolTipText      = "Save file (Ctrl+S)";
+        btnSelect.ToolTipText    = "Select and move shapes (V)";
+        btnRectangle.ToolTipText = "Draw rectangle (R)";
+        btnCircle.ToolTipText    = "Draw circle/ellipse (C)";
+        btnTriangle.ToolTipText  = "Draw triangle (T)";
+        btnLine.ToolTipText      = "Draw line (L)";
+        btnPolygon.ToolTipText   = "Draw polygon (P) - click to add points, double-click to finish";
+        btnUndo.ToolTipText      = "Undo (Ctrl+Z)";
+        btnRedo.ToolTipText      = "Redo (Ctrl+Y)";
+        btnDelete.ToolTipText    = "Delete selected shape (Del)";
+
+        toolbar.Items.AddRange(new ToolStripItem[]
         {
-            using var dlg = new ColorDialog();
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                selectedFillColor = dlg.Color;
-                if (selectedShape != null)
-                {
-                    selectedShape.FillColor = dlg.Color;
-                    canvas.Invalidate();
-                }
-            }
-        };
-
-        borderColorButton = new Button();
-        borderColorButton.Text = "Border Color";
-        borderColorButton.Location = new Point(250, 10);
-        borderColorButton.Click += (s, e) =>
-        {
-            using var dlg = new ColorDialog();
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                selectedBorderColor = dlg.Color;
-                if (selectedShape != null)
-                {
-                    selectedShape.BorderColor = dlg.Color;
-                    canvas.Invalidate();
-                }
-            }
-        };
-
-        borderWidthControl = new NumericUpDown();
-        borderWidthControl.Minimum = 1;
-        borderWidthControl.Maximum = 10;
-        borderWidthControl.Value = selectedBorderWidth;
-        borderWidthControl.Location = new Point(370, 10);
-        borderWidthControl.Width = 50;
-        borderWidthControl.ValueChanged += (s, e) =>
-        {
-            selectedBorderWidth = (int)borderWidthControl.Value;
-            if (selectedShape != null)
-            {
-                selectedShape.BorderWidth = selectedBorderWidth;
-                canvas.Invalidate();
-            }
-        };
-
-        undoButton = new Button() { Text = "Undo", Location = new Point(450, 10) };
-        redoButton = new Button() { Text = "Redo", Location = new Point(530, 10) };
-
-        undoButton.Click += (s, e) =>
-        {
-            if (shapes.Count > 0)
-            {
-                var shape = shapes.Last();
-                shapes.RemoveAt(shapes.Count - 1);
-                undoStack.Push(shape);
-                selectedShape = null;
-                canvas.Invalidate();
-            }
-        };
-
-        redoButton.Click += (s, e) =>
-        {
-            if (undoStack.Count > 0)
-            {
-                var shape = undoStack.Pop();
-                shapes.Add(shape);
-                selectedShape = null;
-                canvas.Invalidate();
-            }
-        };
-
-        canvas = new Panel();
-        canvas.Location = new Point(10, 50);
-        canvas.Size = new Size(860, 480);
-        canvas.BackColor = Color.White;
-        canvas.BorderStyle = BorderStyle.FixedSingle;
-        canvas.Paint += Canvas_Paint;
-        canvas.MouseDown += Canvas_MouseDown;
-        canvas.MouseMove += Canvas_MouseMove;
-        canvas.MouseUp += Canvas_MouseUp;
-
-        this.Controls.AddRange(new Control[] {
-            shapeSelector, fillColorButton, borderColorButton, borderWidthControl,
-            undoButton, redoButton, canvas
+            btnNew, btnOpen, btnSave,
+            new ToolStripSeparator(),
+            btnSelect, btnRectangle, btnCircle, btnTriangle, btnLine, btnPolygon,
+            new ToolStripSeparator(),
+            btnUndo, btnRedo,
+            new ToolStripSeparator(),
+            btnDelete
         });
     }
 
-    private void Canvas_Paint(object sender, PaintEventArgs e)
+    private void SetupPropertyPanel()
     {
-        foreach (var shape in shapes)
-        {
-            shape.Draw(e.Graphics);
+        propertyPanel = new Panel();
+        propertyPanel.Height = 36;
+        propertyPanel.Padding = new Padding(4, 4, 4, 4);
 
-            if (shape == selectedShape)
-            {
-                using var pen = new Pen(Color.Red, 2) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-                e.Graphics.DrawRectangle(pen, shape.Bounds);
-            }
-        }
+        fillSwatch = new Label();
+        fillSwatch.Size = new Size(22, 22);
+        fillSwatch.BackColor = canvas.FillColor;
+        fillSwatch.BorderStyle = BorderStyle.FixedSingle;
 
-        if (currentShape != null)
-            currentShape.Draw(e.Graphics);
+        btnFillColor = new Button();
+        btnFillColor.Text = "Fill Color";
+        btnFillColor.Size = new Size(75, 24);
+
+        borderSwatch = new Label();
+        borderSwatch.Size = new Size(22, 22);
+        borderSwatch.BackColor = canvas.BorderColor;
+        borderSwatch.BorderStyle = BorderStyle.FixedSingle;
+
+        btnBorderColor = new Button();
+        btnBorderColor.Text = "Border Color";
+        btnBorderColor.Size = new Size(85, 24);
+
+        Label widthLabel = new Label();
+        widthLabel.Text = "Width:";
+        widthLabel.AutoSize = true;
+
+        borderWidthInput = new NumericUpDown();
+        borderWidthInput.Minimum = 1;
+        borderWidthInput.Maximum = 30;
+        borderWidthInput.Value = 2;
+        borderWidthInput.Width = 50;
+
+        FlowLayoutPanel flow = new FlowLayoutPanel();
+        flow.Dock = DockStyle.Fill;
+        flow.FlowDirection = FlowDirection.LeftToRight;
+        flow.WrapContents = false;
+        flow.Controls.Add(fillSwatch);
+        flow.Controls.Add(btnFillColor);
+        flow.Controls.Add(borderSwatch);
+        flow.Controls.Add(btnBorderColor);
+        flow.Controls.Add(widthLabel);
+        flow.Controls.Add(borderWidthInput);
+
+        propertyPanel.Controls.Add(flow);
     }
 
-    private void Canvas_MouseDown(object sender, MouseEventArgs e)
+    private void SetupStatusBar()
     {
-        selectedShape = null;
+        statusBar = new StatusStrip();
+        labelCoords = new ToolStripLabel("x: 0  y: 0");
+        labelInfo   = new ToolStripLabel("") { Spring = true };
+        labelInfo.TextAlign = ContentAlignment.MiddleRight;
+        statusBar.Items.Add(labelCoords);
+        statusBar.Items.Add(new ToolStripSeparator());
+        statusBar.Items.Add(labelInfo);
+    }
 
-        foreach (var shape in shapes.AsEnumerable().Reverse())
+    private void SetupLayout()
+    {
+        Panel topArea = new Panel();
+        topArea.Dock = DockStyle.Top;
+        topArea.Height = 68;
+        toolbar.Dock = DockStyle.Top;
+        propertyPanel.Dock = DockStyle.Bottom;
+        topArea.Controls.Add(propertyPanel);
+        topArea.Controls.Add(toolbar);
+
+        this.Controls.Add(canvas);
+        this.Controls.Add(topArea);
+        this.Controls.Add(statusBar);
+    }
+
+    private void WireUpEvents()
+    {
+        btnNew.Click    += (s, e) => NewFile();
+        btnOpen.Click   += (s, e) => OpenFile();
+        btnSave.Click   += (s, e) => SaveFile();
+        btnUndo.Click   += (s, e) => { canvas.Document.Undo(); UpdateTitle(); };
+        btnRedo.Click   += (s, e) => { canvas.Document.Redo(); UpdateTitle(); };
+        btnDelete.Click += (s, e) => canvas.DeleteSelected();
+
+        btnSelect.Click    += (s, e) => SetActiveTool(CanvasTool.Select);
+        btnRectangle.Click += (s, e) => SetActiveTool(CanvasTool.Rectangle);
+        btnCircle.Click    += (s, e) => SetActiveTool(CanvasTool.Circle);
+        btnTriangle.Click  += (s, e) => SetActiveTool(CanvasTool.Triangle);
+        btnLine.Click      += (s, e) => SetActiveTool(CanvasTool.Line);
+        btnPolygon.Click   += (s, e) => SetActiveTool(CanvasTool.Polygon);
+
+        btnFillColor.Click   += (s, e) => PickFillColor();
+        btnBorderColor.Click += (s, e) => PickBorderColor();
+
+        borderWidthInput.ValueChanged += (s, e) =>
         {
-            if (shape.Contains(e.Location))
-            {
-                selectedShape = shape;
-                selectedFillColor = shape.FillColor;
-                selectedBorderColor = shape.BorderColor;
-                selectedBorderWidth = shape.BorderWidth;
-                borderWidthControl.Value = selectedBorderWidth;
-                break;
-            }
-        }
+            canvas.BorderWidth = (int)borderWidthInput.Value;
 
-        if (selectedShape == null)
-            startPoint = e.Location;
+            if (canvas.SelectedShape != null)
+            {
+                int oldWidth = canvas.SelectedShape.BorderWidth;
+                int newWidth = canvas.BorderWidth;
+                canvas.SelectedShape.BorderWidth = newWidth;
+
+                canvas.Document.RecordCommand(new PropertyChangeCommand("Border Width",
+                    () => canvas.SelectedShape.BorderWidth = newWidth,
+                    () => canvas.SelectedShape.BorderWidth = oldWidth));
+
+                canvas.Invalidate();
+            }
+        };
+
+        canvas.SelectionChanged += (s, e) =>
+        {
+            Shape selected = canvas.SelectedShape;
+            if (selected != null)
+            {
+                canvas.FillColor = selected.FillColor;
+                canvas.BorderColor = selected.BorderColor;
+                canvas.BorderWidth = selected.BorderWidth;
+                fillSwatch.BackColor = selected.FillColor;
+                borderSwatch.BackColor = selected.BorderColor;
+                borderWidthInput.Value = selected.BorderWidth;
+            }
+            btnDelete.Enabled = selected != null;
+            UpdateStatusInfo();
+        };
+
+        canvas.MouseMoved += (s, pt) =>
+        {
+            labelCoords.Text = "x: " + pt.X + "  y: " + pt.Y;
+        };
+
+        canvas.Document.Changed += (s, e) =>
+        {
+            btnUndo.Enabled = canvas.Document.CanUndo;
+            btnRedo.Enabled = canvas.Document.CanRedo;
+
+            if (canvas.Document.CanUndo)
+                btnUndo.ToolTipText = "Undo: " + canvas.Document.NextUndoDescription;
+            else
+                btnUndo.ToolTipText = "Nothing to undo";
+
+            if (canvas.Document.CanRedo)
+                btnRedo.ToolTipText = "Redo: " + canvas.Document.NextRedoDescription;
+            else
+                btnRedo.ToolTipText = "Nothing to redo";
+
+            UpdateTitle();
+            UpdateStatusInfo();
+        };
+    }
+
+    private void SetActiveTool(CanvasTool tool)
+    {
+        canvas.Tool = tool;
+        canvas.SetSelection(null);
+
+        // Update which button looks pressed
+        btnSelect.Checked    = tool == CanvasTool.Select;
+        btnRectangle.Checked = tool == CanvasTool.Rectangle;
+        btnCircle.Checked    = tool == CanvasTool.Circle;
+        btnTriangle.Checked  = tool == CanvasTool.Triangle;
+        btnLine.Checked      = tool == CanvasTool.Line;
+        btnPolygon.Checked   = tool == CanvasTool.Polygon;
+
+        if (tool == CanvasTool.Polygon)
+            labelInfo.Text = "Click to add points, double-click or press Enter to finish";
+        else if (tool == CanvasTool.Select)
+            labelInfo.Text = "Click to select, drag to move, use handles to resize, Del to delete";
+        else
+            labelInfo.Text = "Drag to draw";
+    }
+
+    private void PickFillColor()
+    {
+        ColorDialog dlg = new ColorDialog();
+        dlg.Color = canvas.FillColor;
+
+        if (dlg.ShowDialog() != DialogResult.OK) return;
+
+        Color newColor = dlg.Color;
+        canvas.FillColor = newColor;
+        fillSwatch.BackColor = newColor;
+
+        Shape selected = canvas.SelectedShape;
+        if (selected == null) return;
+
+        Color oldColor = selected.FillColor;
+        selected.FillColor = newColor;
+
+        canvas.Document.RecordCommand(new PropertyChangeCommand("Fill Color",
+            () => { selected.FillColor = newColor; canvas.Invalidate(); },
+            () => { selected.FillColor = oldColor; canvas.Invalidate(); }));
 
         canvas.Invalidate();
     }
 
-    private void Canvas_MouseMove(object sender, MouseEventArgs e)
+    private void PickBorderColor()
     {
-        if (e.Button == MouseButtons.Left && selectedShape == null)
+        ColorDialog dlg = new ColorDialog();
+        dlg.Color = canvas.BorderColor;
+
+        if (dlg.ShowDialog() != DialogResult.OK) return;
+
+        Color newColor = dlg.Color;
+        canvas.BorderColor = newColor;
+        borderSwatch.BackColor = newColor;
+
+        Shape selected = canvas.SelectedShape;
+        if (selected == null) return;
+
+        Color oldColor = selected.BorderColor;
+        selected.BorderColor = newColor;
+
+        canvas.Document.RecordCommand(new PropertyChangeCommand("Border Color",
+            () => { selected.BorderColor = newColor; canvas.Invalidate(); },
+            () => { selected.BorderColor = oldColor; canvas.Invalidate(); }));
+
+        canvas.Invalidate();
+    }
+
+    private void NewFile()
+    {
+        if (!ConfirmClose()) return;
+        canvas.Document.Clear();
+        canvas.SetSelection(null);
+        UpdateTitle();
+    }
+
+    private void OpenFile()
+    {
+        if (!ConfirmClose()) return;
+
+        OpenFileDialog dlg = new OpenFileDialog();
+        dlg.Filter = "Drawing files (*.drw)|*.drw|All files (*.*)|*.*";
+
+        if (dlg.ShowDialog() != DialogResult.OK) return;
+
+        try
         {
-            var rect = GetRectangle(startPoint, e.Location);
-
-            currentShape = shapeSelector.SelectedItem.ToString() == "Rectangle"
-                ? new RectangleShape() as Shape
-                : new CircleShape() as Shape;
-
-            currentShape.FillColor = selectedFillColor;
-            currentShape.BorderColor = selectedBorderColor;
-            currentShape.BorderWidth = selectedBorderWidth;
-            currentShape.Bounds = rect;
-
-            canvas.Invalidate();
+            canvas.Document.Load(dlg.FileName);
+            canvas.SetSelection(null);
+            UpdateTitle();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Could not open the file:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
-    private void Canvas_MouseUp(object sender, MouseEventArgs e)
+    private void SaveFile()
     {
-        if (currentShape != null)
+        string path = canvas.Document.FilePath;
+
+        if (string.IsNullOrEmpty(path))
         {
-            shapes.Add(currentShape);
-            redoStack.Clear(); // Clear redo when new shape added
-            currentShape = null;
-            canvas.Invalidate();
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Drawing files (*.drw)|*.drw|All files (*.*)|*.*";
+
+            if (dlg.ShowDialog() != DialogResult.OK) return;
+            path = dlg.FileName;
+        }
+
+        try
+        {
+            canvas.Document.Save(path);
+            UpdateTitle();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Could not save the file:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
-    private Rectangle GetRectangle(Point p1, Point p2)
+    private bool ConfirmClose()
     {
-        return new Rectangle(
-            Math.Min(p1.X, p2.X),
-            Math.Min(p1.Y, p2.Y),
-            Math.Abs(p1.X - p2.X),
-            Math.Abs(p1.Y - p2.Y)
-        );
+        if (!canvas.Document.IsDirty) return true;
+
+        DialogResult result = MessageBox.Show(
+            "You have unsaved changes. Do you want to save first?",
+            "Unsaved Changes",
+            MessageBoxButtons.YesNoCancel,
+            MessageBoxIcon.Warning);
+
+        if (result == DialogResult.Yes)
+        {
+            SaveFile();
+            return !canvas.Document.IsDirty;
+        }
+
+        return result == DialogResult.No;
+    }
+
+    private void UpdateTitle()
+    {
+        string filename = string.IsNullOrEmpty(canvas.Document.FilePath)
+            ? "Untitled"
+            : Path.GetFileName(canvas.Document.FilePath);
+
+        string dirty = canvas.Document.IsDirty ? "*" : "";
+        this.Text = "Drawing App - " + filename + dirty;
+    }
+
+    private void UpdateStatusInfo()
+    {
+        Shape selected = canvas.SelectedShape;
+        if (selected != null)
+        {
+            Rectangle b = selected.Bounds;
+            string name = selected.GetType().Name.Replace("Shape", "");
+            labelInfo.Text = "Selected: " + name + "   x:" + b.X + " y:" + b.Y + " w:" + b.Width + " h:" + b.Height;
+        }
+    }
+
+    private void Form1_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Control)
+        {
+            if (e.KeyCode == Keys.Z) { canvas.Document.Undo(); UpdateTitle(); e.Handled = true; }
+            if (e.KeyCode == Keys.Y) { canvas.Document.Redo(); UpdateTitle(); e.Handled = true; }
+            if (e.KeyCode == Keys.S) { SaveFile(); e.Handled = true; }
+            if (e.KeyCode == Keys.O) { OpenFile(); e.Handled = true; }
+            if (e.KeyCode == Keys.N) { NewFile();  e.Handled = true; }
+            return;
+        }
+
+        if (e.KeyCode == Keys.V) SetActiveTool(CanvasTool.Select);
+        if (e.KeyCode == Keys.R) SetActiveTool(CanvasTool.Rectangle);
+        if (e.KeyCode == Keys.C) SetActiveTool(CanvasTool.Circle);
+        if (e.KeyCode == Keys.T) SetActiveTool(CanvasTool.Triangle);
+        if (e.KeyCode == Keys.L) SetActiveTool(CanvasTool.Line);
+        if (e.KeyCode == Keys.P) SetActiveTool(CanvasTool.Polygon);
+        if (e.KeyCode == Keys.Delete) canvas.DeleteSelected();
+    }
+
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        base.OnFormClosing(e);
+        if (!ConfirmClose())
+            e.Cancel = true;
     }
 }
