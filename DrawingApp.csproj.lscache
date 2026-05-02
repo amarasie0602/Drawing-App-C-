@@ -47,6 +47,7 @@ TemporaryDependencyNodeTargetIdentifier=net8.0-windows
 
 [sourceFiles]
 CircleShape.cs
+Commands.cs
 Form1.cs
 LineShape.cs
 obj/Debug/net8.0-windows/
