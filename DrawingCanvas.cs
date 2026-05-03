@@ -217,7 +217,7 @@ public class DrawingCanvas : Panel
             FinishPolygon();
     }
 
-    private void Canvas_KeyDown(object sender, KeyEventArgs e)
+    private void Canvas_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Enter) FinishPolygon();
         if (e.KeyCode == Keys.Delete) DeleteSelected();
@@ -292,7 +292,7 @@ public class DrawingCanvas : Panel
         }
 
         // Try to select a different shape (check topmost first)
-        Shape clicked = null;
+        Shape? clicked = null;
         for (int i = Document.Shapes.Count - 1; i >= 0; i--)
         {
             if (Document.Shapes[i].HitTest(e.Location))
