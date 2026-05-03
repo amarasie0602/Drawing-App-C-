@@ -28,7 +28,7 @@ public class Form1 : Form
     // Status bar
     private StatusStrip statusBar;
     private ToolStripLabel labelCoords;
-    private ToolStripLabel labelInfo;
+    private ToolStripStatusLabel labelInfo;
 
     public Form1()
     {
@@ -181,7 +181,7 @@ public class Form1 : Form
 
         toolDropdown.SelectedIndexChanged += (s, e) =>
         {
-            string item = toolDropdown.SelectedItem.ToString();
+            string item = toolDropdown.SelectedItem?.ToString() ?? "";
             if (item == "Select")    SetActiveTool(CanvasTool.Select);
             if (item == "Rectangle") SetActiveTool(CanvasTool.Rectangle);
             if (item == "Circle")    SetActiveTool(CanvasTool.Circle);

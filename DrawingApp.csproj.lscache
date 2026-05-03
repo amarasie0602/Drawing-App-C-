@@ -15,7 +15,14 @@ lastDtbSucceeded
 [properties]
 AssemblyName=ShapeApp
 CommandLineArgsForDesignTimeEvaluation=-langversion:12.0 -define:TRACE
+CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=12.0
+ProjectAssetsFile=<PATH>obj/project.assets.json
+RootNamespace=DrawingApp
+RunAnalyzers=
+RunAnalyzersDuringLiveAnalysis=
+SolutionPath=<PATH>DrawingApp.sln
+TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net8.0-windows/ShapeApp.dll
 TargetRefPath=<PATH>obj/Debug/net8.0-windows/ref/ShapeApp.dll
 TemporaryDependencyNodeTargetIdentifier=net8.0-windows
