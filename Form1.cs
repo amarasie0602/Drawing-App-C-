@@ -148,7 +148,7 @@ public class Form1 : Form
     {
         statusBar = new StatusStrip();
         labelCoords = new ToolStripLabel("x: 0  y: 0");
-        labelInfo   = new ToolStripLabel("") { Spring = true };
+        labelInfo   = new ToolStripStatusLabel("") { Spring = true };
         labelInfo.TextAlign = ContentAlignment.MiddleRight;
         statusBar.Items.Add(labelCoords);
         statusBar.Items.Add(new ToolStripSeparator());
