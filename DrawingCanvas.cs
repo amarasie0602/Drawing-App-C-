@@ -48,7 +48,7 @@ public class DrawingCanvas : Panel
         KeyDown += Canvas_KeyDown;
     }
 
-    public void SetSelection(Shape shape)
+    public void SetSelection(Shape? shape)
     {
         SelectedShape = shape;
         SelectionChanged?.Invoke(this, EventArgs.Empty);
