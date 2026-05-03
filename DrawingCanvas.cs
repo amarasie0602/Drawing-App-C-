@@ -15,26 +15,26 @@ public class DrawingCanvas : Panel
     public Color BorderColor { get; set; } = Color.Black;
     public int BorderWidth { get; set; } = 2;
 
-    public Shape SelectedShape { get; private set; }
+    public Shape? SelectedShape { get; private set; }
 
-    public event EventHandler SelectionChanged;
-    public event EventHandler<Point> MouseMoved;
+    public event EventHandler? SelectionChanged;
+    public event EventHandler<Point>? MouseMoved;
 
     // State for drawing a new shape
     private Point drawStart;
-    private Shape previewShape;
+    private Shape? previewShape;
 
     // State for moving a selected shape
     private bool isMoving;
     private Point lastMousePos;
-    private object geometryBeforeDrag;
+    private object? geometryBeforeDrag;
 
     // State for resizing via handles
     private int activeHandleIndex = -1;
-    private Point[] handlePointsBeforeDrag;
+    private Point[]? handlePointsBeforeDrag;
 
     // State for polygon drawing (click to add points)
-    private PolygonShape polygonInProgress;
+    private PolygonShape? polygonInProgress;
     private Point currentMousePos;
 
     public DrawingCanvas()
