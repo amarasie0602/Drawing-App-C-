@@ -9,12 +9,7 @@ public class Form1 : Form
 
     // Toolbar buttons
     private ToolStrip toolbar;
-    private ToolStripButton btnSelect;
-    private ToolStripButton btnRectangle;
-    private ToolStripButton btnCircle;
-    private ToolStripButton btnTriangle;
-    private ToolStripButton btnLine;
-    private ToolStripButton btnPolygon;
+    private ToolStripComboBox toolDropdown;
     private ToolStripButton btnUndo;
     private ToolStripButton btnRedo;
     private ToolStripButton btnDelete;
@@ -35,7 +30,7 @@ public class Form1 : Form
     private ToolStripLabel labelCoords;
     private ToolStripLabel labelInfo;
 
-    public Form1() {
+    public Form1()
     {
         this.Text = "Drawing App";
         this.Size = new Size(1000, 650);
@@ -52,7 +47,7 @@ public class Form1 : Form
 
         SetActiveTool(CanvasTool.Rectangle);
         UpdateTitle();
-    } }
+    }
 
     private void SetupCanvas()
     {
@@ -65,37 +60,35 @@ public class Form1 : Form
     {
         toolbar = new ToolStrip();
 
-        btnNew       = new ToolStripButton("New");
-        btnOpen      = new ToolStripButton("Open");
-        btnSave      = new ToolStripButton("Save");
-        btnSelect    = new ToolStripButton("Select");
-        btnRectangle = new ToolStripButton("Rectangle");
-        btnCircle    = new ToolStripButton("Circle");
-        btnTriangle  = new ToolStripButton("Triangle");
-        btnLine      = new ToolStripButton("Line");
-        btnPolygon   = new ToolStripButton("Polygon");
-        btnUndo      = new ToolStripButton("Undo");
-        btnRedo      = new ToolStripButton("Redo");
-        btnDelete    = new ToolStripButton("Delete");
+        btnNew    = new ToolStripButton("New");
+        btnOpen   = new ToolStripButton("Open");
+        btnSave   = new ToolStripButton("Save");
+        btnUndo   = new ToolStripButton("Undo");
+        btnRedo   = new ToolStripButton("Redo");
+        btnDelete = new ToolStripButton("Delete");
 
-        btnNew.ToolTipText       = "New drawing (Ctrl+N)";
-        btnOpen.ToolTipText      = "Open file (Ctrl+O)";
-        btnSave.ToolTipText      = "Save file (Ctrl+S)";
-        btnSelect.ToolTipText    = "Select and move shapes (V)";
-        btnRectangle.ToolTipText = "Draw rectangle (R)";
-        btnCircle.ToolTipText    = "Draw circle/ellipse (C)";
-        btnTriangle.ToolTipText  = "Draw triangle (T)";
-        btnLine.ToolTipText      = "Draw line (L)";
-        btnPolygon.ToolTipText   = "Draw polygon (P) - click to add points, double-click to finish";
-        btnUndo.ToolTipText      = "Undo (Ctrl+Z)";
-        btnRedo.ToolTipText      = "Redo (Ctrl+Y)";
-        btnDelete.ToolTipText    = "Delete selected shape (Del)";
+        btnNew.ToolTipText    = "New drawing (Ctrl+N)";
+        btnOpen.ToolTipText   = "Open file (Ctrl+O)";
+        btnSave.ToolTipText   = "Save file (Ctrl+S)";
+        btnUndo.ToolTipText   = "Undo (Ctrl+Z)";
+        btnRedo.ToolTipText   = "Redo (Ctrl+Y)";
+        btnDelete.ToolTipText = "Delete selected shape (Del)";
+
+        // Shape tool dropdown
+        toolDropdown = new ToolStripComboBox();
+        toolDropdown.DropDownStyle = ComboBoxStyle.DropDownList;
+        toolDropdown.Items.AddRange(new string[] { "Select", "Rectangle", "Circle", "Triangle", "Line", "Polygon" });
+        toolDropdown.SelectedIndex = 1; // Rectangle by default
+        toolDropdown.ToolTipText = "Choose drawing tool";
+        toolDropdown.Width = 100;
+
+        ToolStripLabel toolLabel = new ToolStripLabel("Tool:");
 
         toolbar.Items.AddRange(new ToolStripItem[]
         {
             btnNew, btnOpen, btnSave,
             new ToolStripSeparator(),
-            btnSelect, btnRectangle, btnCircle, btnTriangle, btnLine, btnPolygon,
+            toolLabel, toolDropdown,
             new ToolStripSeparator(),
             btnUndo, btnRedo,
             new ToolStripSeparator(),
@@ -155,7 +148,7 @@ public class Form1 : Form
     {
         statusBar = new StatusStrip();
         labelCoords = new ToolStripLabel("x: 0  y: 0");
-        labelInfo   = new ToolStripStatusLabel("") { Spring = true };
+        labelInfo   = new ToolStripLabel("") { Spring = true };
         labelInfo.TextAlign = ContentAlignment.MiddleRight;
         statusBar.Items.Add(labelCoords);
         statusBar.Items.Add(new ToolStripSeparator());
@@ -186,12 +179,16 @@ public class Form1 : Form
         btnRedo.Click   += (s, e) => { canvas.Document.Redo(); UpdateTitle(); };
         btnDelete.Click += (s, e) => canvas.DeleteSelected();
 
-        btnSelect.Click    += (s, e) => SetActiveTool(CanvasTool.Select);
-        btnRectangle.Click += (s, e) => SetActiveTool(CanvasTool.Rectangle);
-        btnCircle.Click    += (s, e) => SetActiveTool(CanvasTool.Circle);
-        btnTriangle.Click  += (s, e) => SetActiveTool(CanvasTool.Triangle);
-        btnLine.Click      += (s, e) => SetActiveTool(CanvasTool.Line);
-        btnPolygon.Click   += (s, e) => SetActiveTool(CanvasTool.Polygon);
+        toolDropdown.SelectedIndexChanged += (s, e) =>
+        {
+            string item = toolDropdown.SelectedItem.ToString();
+            if (item == "Select")    SetActiveTool(CanvasTool.Select);
+            if (item == "Rectangle") SetActiveTool(CanvasTool.Rectangle);
+            if (item == "Circle")    SetActiveTool(CanvasTool.Circle);
+            if (item == "Triangle")  SetActiveTool(CanvasTool.Triangle);
+            if (item == "Line")      SetActiveTool(CanvasTool.Line);
+            if (item == "Polygon")   SetActiveTool(CanvasTool.Polygon);
+        };
 
         btnFillColor.Click   += (s, e) => PickFillColor();
         btnBorderColor.Click += (s, e) => PickBorderColor();
@@ -260,16 +257,16 @@ public class Form1 : Form
         canvas.Tool = tool;
         canvas.SetSelection(null);
 
-        // Update which button looks pressed
-        btnSelect.Checked    = tool == CanvasTool.Select;
-        btnRectangle.Checked = tool == CanvasTool.Rectangle;
-        btnCircle.Checked    = tool == CanvasTool.Circle;
-        btnTriangle.Checked  = tool == CanvasTool.Triangle;
-        btnLine.Checked      = tool == CanvasTool.Line;
-        btnPolygon.Checked   = tool == CanvasTool.Polygon;
+        // Keep the dropdown in sync when tool is changed via keyboard shortcut
+        if (tool == CanvasTool.Select)    toolDropdown.SelectedItem = "Select";
+        if (tool == CanvasTool.Rectangle) toolDropdown.SelectedItem = "Rectangle";
+        if (tool == CanvasTool.Circle)    toolDropdown.SelectedItem = "Circle";
+        if (tool == CanvasTool.Triangle)  toolDropdown.SelectedItem = "Triangle";
+        if (tool == CanvasTool.Line)      toolDropdown.SelectedItem = "Line";
+        if (tool == CanvasTool.Polygon)   toolDropdown.SelectedItem = "Polygon";
 
         if (tool == CanvasTool.Polygon)
-            labelInfo.Text = "Click to add points, double-click or press Enter to finish";
+            labelInfo.Text = "Click to add points, double-click or Escape to cancel, Enter/right-click to finish";
         else if (tool == CanvasTool.Select)
             labelInfo.Text = "Click to select, drag to move, use handles to resize, Del to delete";
         else
@@ -429,6 +426,7 @@ public class Form1 : Form
             return;
         }
 
+        if (e.KeyCode == Keys.Escape) { canvas.CancelPolygon(); e.Handled = true; }
         if (e.KeyCode == Keys.V) SetActiveTool(CanvasTool.Select);
         if (e.KeyCode == Keys.R) SetActiveTool(CanvasTool.Rectangle);
         if (e.KeyCode == Keys.C) SetActiveTool(CanvasTool.Circle);
