@@ -100,7 +100,7 @@ public class DrawingDocument
     public void Load(string path)
     {
         string json = File.ReadAllText(path);
-        List<Shape> loaded = JsonSerializer.Deserialize<List<Shape>>(json, jsonOptions);
+        List<Shape>? loaded = JsonSerializer.Deserialize<List<Shape>>(json, jsonOptions);
 
         Shapes.Clear();
         if (loaded != null)
