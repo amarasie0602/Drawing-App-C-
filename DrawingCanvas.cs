@@ -220,7 +220,6 @@ public class DrawingCanvas : Panel
     private void Canvas_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Enter) FinishPolygon();
-        if (e.KeyCode == Keys.Escape) CancelPolygon();
         if (e.KeyCode == Keys.Delete) DeleteSelected();
     }
 
@@ -263,7 +262,7 @@ public class DrawingCanvas : Panel
         Invalidate();
     }
 
-    private void CancelPolygon()
+    public void CancelPolygon()
     {
         polygonInProgress = null;
         Invalidate();
