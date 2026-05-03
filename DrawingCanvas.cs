@@ -151,7 +151,7 @@ public class DrawingCanvas : Panel
                 lastMousePos = e.Location;
                 Invalidate();
             }
-            else if (activeHandleIndex >= 0 && SelectedShape != null)
+            else if (activeHandleIndex >= 0 && SelectedShape != null && handlePointsBeforeDrag != null)
             {
                 SelectedShape.ApplyHandle(activeHandleIndex, e.Location, handlePointsBeforeDrag);
                 Invalidate();
@@ -273,7 +273,7 @@ public class DrawingCanvas : Panel
         // Check if user clicked on a resize handle of the selected shape
         if (SelectedShape != null)
         {
-            ShapeHandle clickedHandle = GetHandleAt(SelectedShape, e.Location);
+            ShapeHandle? clickedHandle = GetHandleAt(SelectedShape, e.Location);
             if (clickedHandle != null)
             {
                 activeHandleIndex = clickedHandle.Index;
@@ -315,7 +315,7 @@ public class DrawingCanvas : Panel
     {
         if (Tool == CanvasTool.Select && SelectedShape != null)
         {
-            ShapeHandle handle = GetHandleAt(SelectedShape, mousePos);
+            ShapeHandle? handle = GetHandleAt(SelectedShape, mousePos);
             if (handle != null)
                 Cursor = handle.Cursor;
             else if (SelectedShape.HitTest(mousePos))
@@ -365,7 +365,7 @@ public class DrawingCanvas : Panel
         }
     }
 
-    private ShapeHandle GetHandleAt(Shape shape, Point p)
+    private ShapeHandle? GetHandleAt(Shape shape, Point p)
     {
         foreach (ShapeHandle handle in shape.GetHandles())
         {
